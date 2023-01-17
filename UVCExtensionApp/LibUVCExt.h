@@ -17,4 +17,5 @@
 EXTERN_DLL_EXPORT bool LibUVCInit(void);
 EXTERN_DLL_EXPORT bool LibUVCWriteControl(BYTE* controlPacket, int length, ULONG* pReadCount);
 EXTERN_DLL_EXPORT bool LibUVCReadControl(BYTE* controlPacket, int length, ULONG* pReadCount);
+EXTERN_DLL_EXPORT int LibUVCReadButtonStatus(void);
 EXTERN_DLL_EXPORT bool LibUVCDeInit(void);

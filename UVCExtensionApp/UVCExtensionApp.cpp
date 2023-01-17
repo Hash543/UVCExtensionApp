@@ -211,7 +211,7 @@ EXTERN_DLL_EXPORT bool LibUVCInit(void)
 		GetVideoDeviceFriendlyNames(i);
 		wcstombs_s(&returnValue, videoDevName, MAX_PATH, szFriendlyName, MAX_PATH);
 		if (!(strcmp(videoDevName, "Pixio StreamCube")))
-			idxDevice = i;
+				idxDevice = i;
 	}
 	bool fSuccess = false;
 	//
@@ -264,4 +264,22 @@ EXTERN_DLL_EXPORT bool LibUVCDeInit(void)
 	SafeRelease(&pVideoSource);
 	CoTaskMemFree(szFriendlyName);
 	return true;
+}
+
+EXTERN_DLL_EXPORT int LibUVCReadButtonStatus(void)
+{
+	BYTE packet[8];
+	ULONG readCount;
+	//
+	if (idxDevice >= 0)
+	{
+		ULONG flags = KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_TOPOLOGY;
+		//
+		if (!SetGetExtensionUnit(xuGuid, 2, 2, flags, (void*)packet, 8, &readCount))
+		{
+			if( readCount == 8 )
+				return packet[3];
+		}
+	}
+	return -1;
 }
