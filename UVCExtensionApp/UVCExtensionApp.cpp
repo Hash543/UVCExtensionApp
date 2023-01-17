@@ -22,6 +22,7 @@ IMFSourceReader *pVideoReader = NULL;
 //
 UINT32 noOfVideoDevices = 0;
 WCHAR *szFriendlyName = NULL;
+int idxDevice = -1;
 
 int main()
 {
@@ -196,51 +197,11 @@ done:
 	return hr;
 }
 
-
-EXTERN_DLL_EXPORT bool LibUVCWriteControl(BYTE *controlPacket, int length, ULONG *pReadCount)
+EXTERN_DLL_EXPORT bool LibUVCInit(void)
 {
 	HRESULT	hr = GetVideoDevices();
 	//
-	int idxDevice = -1;
-	//
-	for(int i = 0; i < noOfVideoDevices; i++)
-	{
-		char videoDevName[MAX_PATH];
-		size_t returnValue;
-		//
-		GetVideoDeviceFriendlyNames(i);
-		wcstombs_s(&returnValue, videoDevName, MAX_PATH, szFriendlyName, MAX_PATH);
-		if (!(strcmp(videoDevName, "Pixio StreamCube")))
-			idxDevice = i;
-	}
-	bool fSuccess = false;
-	//
-	if( idxDevice >= 0 )
-	{
-		InitVideoDevice(idxDevice);
-		//
-		ULONG flags  = KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_TOPOLOGY;
-		//
-		if (!SetGetExtensionUnit(xuGuid, 2, 1, flags, (void*)controlPacket, length, pReadCount))
-			fSuccess = true;
-	}
-	for (UINT32 i = 0; i < noOfVideoDevices; i++)
-	{
-		SafeRelease(&ppVideoDevices[i]);
-	}
-	CoTaskMemFree(ppVideoDevices);
-	SafeRelease(&pVideoConfig);
-	SafeRelease(&pVideoSource);
-	CoTaskMemFree(szFriendlyName);
-	return fSuccess;
-}
-
-
-EXTERN_DLL_EXPORT bool LibUVCReadControl(BYTE* controlPacket, int length, ULONG* pReadCount)
-{
-	HRESULT	hr = GetVideoDevices();
-	//
-	int idxDevice = -1;
+	idxDevice = -1;
 	//
 	for (int i = 0; i < noOfVideoDevices; i++)
 	{
@@ -257,12 +218,43 @@ EXTERN_DLL_EXPORT bool LibUVCReadControl(BYTE* controlPacket, int length, ULONG*
 	if (idxDevice >= 0)
 	{
 		InitVideoDevice(idxDevice);
+		fSuccess = true;
+	}
+	return fSuccess;
+}
+
+
+EXTERN_DLL_EXPORT bool LibUVCWriteControl(BYTE *controlPacket, int length, ULONG *pReadCount)
+{
+	bool fSuccess = false;
+	//
+	if( idxDevice >= 0 )
+	{
+		ULONG flags  = KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_TOPOLOGY;
 		//
+		if (!SetGetExtensionUnit(xuGuid, 2, 1, flags, (void*)controlPacket, length, pReadCount))
+			fSuccess = true;
+	}
+	return fSuccess;
+}
+
+EXTERN_DLL_EXPORT bool LibUVCReadControl(BYTE* controlPacket, int length, ULONG* pReadCount)
+{
+	bool fSuccess = false;
+	//
+	if (idxDevice >= 0)
+	{
 		ULONG flags = KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_TOPOLOGY;
 		//
 		if (!SetGetExtensionUnit(xuGuid, 2, 2, flags, (void*)controlPacket, length, pReadCount))
 			fSuccess = true;
 	}
+	return fSuccess;
+}
+
+EXTERN_DLL_EXPORT bool LibUVCDeInit(void)
+{
+	idxDevice = -1;
 	for (UINT32 i = 0; i < noOfVideoDevices; i++)
 	{
 		SafeRelease(&ppVideoDevices[i]);
@@ -271,6 +263,5 @@ EXTERN_DLL_EXPORT bool LibUVCReadControl(BYTE* controlPacket, int length, ULONG*
 	SafeRelease(&pVideoConfig);
 	SafeRelease(&pVideoSource);
 	CoTaskMemFree(szFriendlyName);
-	return fSuccess;
+	return true;
 }
-
