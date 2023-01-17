@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+.vs/
+UVCExtensionApp/x64/
+x64/
