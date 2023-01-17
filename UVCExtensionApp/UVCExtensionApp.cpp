@@ -268,18 +268,20 @@ EXTERN_DLL_EXPORT bool LibUVCDeInit(void)
 
 EXTERN_DLL_EXPORT int LibUVCReadButtonStatus(void)
 {
+	BYTE packetInit[8] = { 0x80, 0x02, 0x07, 0x00, 0x00 , 0x00 , 0x00 , 0x00 };
+	BYTE packetCmd[8] = { 0x80, 0x04, 0x07, 0x00, 0x00 , 0x00 , 0x00 , 0x00 };
+	//
 	BYTE packet[8];
 	ULONG readCount;
 	//
-	if (idxDevice >= 0)
-	{
-		ULONG flags = KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_TOPOLOGY;
-		//
-		if (!SetGetExtensionUnit(xuGuid, 2, 2, flags, (void*)packet, 8, &readCount))
-		{
-			if( readCount == 8 )
-				return packet[3];
-		}
-	}
-	return -1;
+	bool f = LibUVCWriteControl(packetInit, 8, &readCount);
+	if (f == false)
+		return -1;
+	f = LibUVCWriteControl(packetCmd, 8, &readCount);
+	if (f == false)
+		return -1;
+	f = LibUVCReadControl(packet, 8, &readCount);
+	if (f == false)
+		return -1;
+	return packet[3];
 }
