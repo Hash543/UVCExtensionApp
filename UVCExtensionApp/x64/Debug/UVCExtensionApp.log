@@ -1,0 +1,5 @@
+﻿  UVCExtensionApp.cpp
+D:\Google 雲端硬碟\＊＊所有客戶＊＊\嘉瑪科技\pixio\webcam\UVCExtensionApp\UVCExtensionApp\UVCExtensionApp.cpp(29,7): warning C4101: 'enteredStr': 未參考的區域變數
+D:\Google 雲端硬碟\＊＊所有客戶＊＊\嘉瑪科技\pixio\webcam\UVCExtensionApp\UVCExtensionApp\UVCExtensionApp.cpp(206,19): warning C4018: '<': signed/unsigned 不相符
+D:\Google 雲端硬碟\＊＊所有客戶＊＊\嘉瑪科技\pixio\webcam\UVCExtensionApp\UVCExtensionApp\UVCExtensionApp.cpp(245,20): warning C4018: '<': signed/unsigned 不相符
+  UVCExtensionApp.vcxproj -> D:\Google 雲端硬碟\＊＊所有客戶＊＊\嘉瑪科技\pixio\webcam\UVCExtensionApp\x64\Debug\UVCExtensionApp.dll
