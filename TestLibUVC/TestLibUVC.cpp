@@ -11,7 +11,9 @@ int main(int argc, char *argv[])
 	//
 	bool f = LibUVCInit();
 	printf("Init OK: %d\n", f);
-	f = LibUVCWriteControl(packetInit, 8, &readCount);
+	int ret = LibUVCReadButtonStatus();
+	printf("ReadButtonStatus: %d\n", ret);
+	/*f = LibUVCWriteControl(packetInit, 8, &readCount);
 	printf("%d\n", f);
 	f = LibUVCWriteControl(packetCmd, 8, &readCount);
 	printf("%d\n", f);
@@ -21,5 +23,5 @@ int main(int argc, char *argv[])
 		printf("readCount %x\n", buffer[i]);
 	Sleep(5000);
 	f = LibUVCDeInit();
-	printf("DeInit OK: %d\n", f);
+	printf("DeInit OK: %d\n", f);*/
 }

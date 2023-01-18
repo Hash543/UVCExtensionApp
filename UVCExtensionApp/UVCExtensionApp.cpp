@@ -283,5 +283,5 @@ EXTERN_DLL_EXPORT int LibUVCReadButtonStatus(void)
 	f = LibUVCReadControl(packet, 8, &readCount);
 	if (f == false)
 		return -1;
-	return packet[3];
+	return packet[2];
 }
